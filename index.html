@@ -687,6 +687,14 @@
 			setBadge("warn", "Waiting for file");
 		}
 
+		function selectFile(file) {
+			if (!file) return;
+			state.file = file;
+			el("fileLabel").textContent = `${file.name} • ${(file.size / 1024).toFixed(1)} KB`;
+			el("validateBtn").disabled = false;
+			setBadge("warn", "File selected, ready to process");
+		}
+
 		const dropzone = el("dropzone");
 		const fileInput = el("fileInput");
 
@@ -716,16 +724,14 @@
 			const file = event.dataTransfer.files[0];
 			if (file) {
 				fileInput.files = event.dataTransfer.files;
-				el("fileLabel").textContent = `${file.name} • ${(file.size / 1024).toFixed(1)} KB`;
-				await processFile(file);
+				selectFile(file);
 			}
 		});
 
 		fileInput.addEventListener("change", async () => {
 			const file = fileInput.files[0];
 			if (!file) return;
-			el("fileLabel").textContent = `${file.name} • ${(file.size / 1024).toFixed(1)} KB`;
-			await processFile(file);
+			selectFile(file);
 		});
 
 		el("validateBtn").addEventListener("click", () => {
