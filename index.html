@@ -602,7 +602,9 @@
 
 		async function processFile(file) {
 			if (!file) return;
+			el("summaryPanel").classList.remove("hidden");
 			setBadge("warn", "Processing file");
+			el("validateBtn").textContent = "Processing...";
 			el("validateBtn").disabled = true;
 			el("downloadPanel").classList.add("hidden");
 			el("outputNote").textContent = "Staging CSV in Postgres, validating, and building output chunks...";
@@ -627,8 +629,6 @@
 				if (!response.ok || !result.ok) {
 					throw new Error(result.error || "Backend validation failed");
 				}
-
-				el("summaryPanel").classList.remove("hidden");
 
 				state.file = file;
 				state.jobId = result.jobId;
@@ -658,12 +658,14 @@
 					: "No valid rows were produced from the file.";
 
 				el("validateBtn").disabled = false;
+				el("validateBtn").textContent = "Process file";
 				setBadge(
 					validRows ? "ok" : "warn",
 					validRows ? "Processing complete and ready" : "Processing complete with no valid rows"
 				);
 			} catch (error) {
 				el("validateBtn").disabled = false;
+				el("validateBtn").textContent = "Process file";
 				setBadge("bad", "Processing failed");
 				el("outputNote").textContent = error instanceof Error ? error.message : "Processing failed";
 			}
@@ -684,6 +686,7 @@
 			el("logCount").textContent = "0 logs";
 			updateStats({ read: 0, valid: 0, invalid: 0, missingRows: 0, phoneIssues: 0, dateIssues: 0, totalLogs: 0, chunkCount: 0 });
 			el("validateBtn").disabled = true;
+			el("validateBtn").textContent = "Process file";
 			setBadge("warn", "Waiting for file");
 		}
 
@@ -744,3 +747,4 @@
 	</script>
 </body>
 </html>
+
